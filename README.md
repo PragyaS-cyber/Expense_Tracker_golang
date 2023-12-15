@@ -1,0 +1,1 @@
+This is a simple golang project which describes how API works and it has used golang's "GoFr" framework.
