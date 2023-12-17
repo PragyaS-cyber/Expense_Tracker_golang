@@ -53,7 +53,7 @@ func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
 	router := mux.NewRouter()
 	router.HandleFunc("/tasks", createTaskCmd).Methods("POST")
-	router.HandleFunc("/tasks", getTasks).Methods("GET")
+	router.HandleFunc("/tasks", getTasksCmd).Methods("GET")
 	router.ServeHTTP(rr, req)
 	return rr
 }
