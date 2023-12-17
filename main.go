@@ -2,10 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"net/http"
-
-	"github.com/gorilla/mux"
+	"fmt"
 	"github.com/jinzhu/gorm"
+	"github.com/vikash/gofr/pkg/gofr"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
@@ -30,89 +29,70 @@ func init() {
 }
 
 func main() {
-	r := mux.NewRouter()
+	app := gofr.NewCMD()
 
-	// Routes
-	r.HandleFunc("/tasks", createTask).Methods("POST")
-	r.HandleFunc("/tasks", getTasks).Methods("GET")
-	r.HandleFunc("/tasks/{id}", getTask).Methods("GET")
-	r.HandleFunc("/tasks/{id}", updateTask).Methods("PUT")
-	r.HandleFunc("/tasks/{id}", deleteTask).Methods("DELETE")
+	// Subcommands
+	app.SubCommand("create", createTaskCmd)
+	app.SubCommand("get", getTasksCmd, )
+	app.SubCommand("get/{id}", getTaskCmd )
+	app.SubCommand("update/{id}", updateTaskCmd)
+	app.SubCommand("delete/{id}", deleteTaskCmd)
 
-	http.Handle("/", r)
-	http.ListenAndServe("localhost:8080", nil)
+	app.Run()
 }
 
-// CRUD operations
+// Subcommand handlers
 
-func createTask(w http.ResponseWriter, r *http.Request) {
+func createTaskCmd(c *gofr.Context) (interface{}, error) {
 	var task Task
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&task); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+	if err := json.NewDecoder(c.Request.Body).Decode(&task); err != nil {
+		return nil, err
 	}
-	defer r.Body.Close()
+	defer c.Request.Body.Close()
 
 	db.Create(&task)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(task)
+	return task, nil
 }
 
-func getTasks(w http.ResponseWriter, r *http.Request) {
+func getTasksCmd(c *gofr.Context) (interface{}, error) {
 	var tasks []Task
 	db.Find(&tasks)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(tasks)
+	return tasks, nil
 }
 
-func getTask(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
+func getTaskCmd(c *gofr.Context) (interface{}, error) {
+	id := c.Param("id")
 	var task Task
 	if err := db.First(&task, id).Error; err != nil {
-		http.Error(w, "Task not found", http.StatusNotFound)
-		return
+		return nil, fmt.Errorf("Task not found")
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(task)
+	return task, nil
 }
 
-func updateTask(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
+func updateTaskCmd(c *gofr.Context) (interface{}, error) {
+	id := c.Param("id")
 	var task Task
 	if err := db.First(&task, id).Error; err != nil {
-		http.Error(w, "Task not found", http.StatusNotFound)
-		return
+		return nil, fmt.Errorf("Task not found")
 	}
 
 	var updatedTask Task
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&updatedTask); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+	if err := json.NewDecoder(c.Request.Body).Decode(&updatedTask); err != nil {
+		return nil, err
 	}
-	defer r.Body.Close()
+	defer c.Request.Body.Close()
 
 	db.Model(&task).Updates(updatedTask)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(task)
+	return task, nil
 }
 
-func deleteTask(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
+func deleteTaskCmd(c *gofr.Context) (interface{}, error) {
+	id := c.Param("id")
 	var task Task
 	if err := db.First(&task, id).Error; err != nil {
-		http.Error(w, "Task not found", http.StatusNotFound)
-		return
+		return nil, fmt.Errorf("Task not found")
 	}
 
 	db.Delete(&task)
-	w.WriteHeader(http.StatusNoContent)
+	return nil, nil
 }
