@@ -8,6 +8,6 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_USER: your_username
-      POSTGRES_PASSWORD: your_password
-      POSTGRES_DB: your_database
+      POSTGRES_USER: pragya_sh
+      POSTGRES_PASSWORD: pragya_zopsmart
+      POSTGRES_DB: test_db

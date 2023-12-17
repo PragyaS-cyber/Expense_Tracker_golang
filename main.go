@@ -6,7 +6,7 @@ import (
 	//"net/http"
 	"github.com/jinzhu/gorm"
 	"github.com/vikash/gofr/pkg/gofr"
-	_ //"github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 // Task model
@@ -23,7 +23,7 @@ var db *gorm.DB
 func init() {
 	var err error
 	// Update connection details based on Dockerized PostgreSQL instance
-	db, err = gorm.Open("postgres", "host=postgres user=your_username dbname=your_database sslmode=disable password=your_password")
+	db, err = gorm.Open("postgres", "host=postgres user=pragya_sh dbname=test_db sslmode=disable password=pragya_zopsmart")
 	if err != nil {
 	   panic("Failed to connect to database")
 	}
