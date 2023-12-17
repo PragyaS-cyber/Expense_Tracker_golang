@@ -36,7 +36,31 @@ A simple HTTP (REST) API for managing expenses of a user. The API supports CRUD 
    cd expense_tracker
    ```
 
-clone the repository: https://github.com/PragyaS-cyber/Expense_Tracker_golang.git
+2. Install dependencies:
+
+	```bash
+	go mod download
+	```
+
+
+
+1. Set up PostgreSQL database:
+	```bash
+	docker run -d -p 5432:5432 --name todo-db -e POSTGRES_USER=your_username -e POSTGRES_PASSWORD=your_password -e POSTGRES_DB=todo_db postgres
+	```
+
+2. Update database connection details:
+	```bash
+	// Update connection details based on Dockerized PostgreSQL instance
+	db, err = gorm.Open("postgres", "host=localhost user=your_username dbname=todo_db sslmode=disable password=your_password")
+	```
+
+### Run the API:
+	```bash
+	go run main.go
+	```
+
+   
 
 ### link for the repository : https://github.com/PragyaS-cyber/Expense_Tracker_golang
 
