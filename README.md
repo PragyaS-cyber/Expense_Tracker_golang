@@ -57,10 +57,10 @@ A simple HTTP (REST) API for managing expenses of a user. The API supports CRUD 
 
 ### Run the API:
 	```bash
-	go run main.go
+	 go run main.go
 	```
 
    
 
 
-![Alt text](image.png)
+![Alt text](image-1.png)
