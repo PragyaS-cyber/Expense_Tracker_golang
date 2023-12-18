@@ -62,6 +62,5 @@ A simple HTTP (REST) API for managing expenses of a user. The API supports CRUD 
 
    
 
-### link for the repository : https://github.com/PragyaS-cyber/Expense_Tracker_golang
 
 ![Alt text](image.png)
